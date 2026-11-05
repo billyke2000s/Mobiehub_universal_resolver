@@ -1,0 +1,5 @@
+[
+  {"provider":"example-provider","kind":"movie","error":"http_404"},
+  {"provider":"example-provider","kind":"series","error":"access_challenge"},
+  {"provider":"untested-provider","kind":"movie"}
+]
