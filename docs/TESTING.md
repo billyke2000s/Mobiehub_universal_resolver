@@ -33,3 +33,11 @@ Every repaired provider/kind needs: initial status, exact failure, proposed chan
 - **Blocked:** access or environmental limitation, not a pass.
 
 Do not claim tests passed without a recorded run. CI is a separate task; this document does not imply CI currently exists.
+
+## Local AI extension checks (5 November 2026)
+
+`python -m unittest discover -s tests -v`: 24 tests passed locally, including real Chromium against a controlled changing-page/iframe fixture, recipe replay and challenge refusal. Source-proposal tests cover unique text, syntax, path/repository scope, explicit approval, stale-file refusal, restart recovery and rollback. HTTP tests cover token/Host/Origin/size checks, bounded workers and cancellation.
+
+With the matching Cortana checkout beside this repo (or `CORTANA_CHECKOUT` set), the cross-repo contract test uses the actual Cortana host, resolver service and Ollama HTTP client with a scripted local model server. It prepares, approves, applies and rolls back a fixture source patch over real loopback HTTP. CI checks out both matching branches for this test.
+
+These tests do not exercise real Qwen inference, live production sites, native Android playback, APK building or deployment. No site-fix certification follows from them.

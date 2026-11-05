@@ -52,3 +52,7 @@ A small local model is optional. The deterministic engine must function without 
 ## Current code reality
 
 `begin_repair` only changes task state and increments attempts. There is no automatic diagnosis, selector fallback, LLM call, site patching, player test, promotion or rollback yet.
+
+## Current implementation update (5 November 2026)
+
+The audit-led sequence above is retained as historical design. The owner clarified that the primary task is local AI browser recovery and reusable recipes. This is now implemented separately from the classifier: observed-element browser navigation, approved recipe saving, bounded exact source-replacement proposals, Python parsing, approved application and hash-checked rollback. It does not execute generated source or certify native playback. See LOCAL_AI_EXTENSION.md.

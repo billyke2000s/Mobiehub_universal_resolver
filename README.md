@@ -1,56 +1,42 @@
 # MovieHub Universal Resolver
 
-**A standalone, evidence-driven audit and repair framework for MovieHub sources.**
+**A local AI browser resolver, with a separately installable Cortana extension.**
 
-> **Development status: early foundation.** The Python CLI, evidence classifier, bounded repair-task state machine and JSON checkpoints exist. Live extraction, self-healing, native playback telemetry, scheduler, API, and Cortana extension are **not implemented**. No real website is certified by the example data.
+The goal is to handle changing search pages and real players with local AI, learn reusable navigation routes, and prepare small repairs against your actual MovieHub checkout. Repeating a whole-site audit is not the main workflow.
 
-## Why this exists
+## Install and run
 
-MovieHub has a large and changing set of source adapters. Repeated manual audits are slow, expensive and prone to wasting time on already-working providers. The goal is to **check, skip passing routes, diagnose failures, attempt bounded repairs, verify playback and checkpoint progress**, without repeatedly requiring an AI assistant.
-
-The resolver stays separate from MovieHub's Android app. An optional Cortana AI extension is planned, but normal Cortana installations must never contain MovieHub-specific menus or tools.
-
-## What works today
-
-| Capability | Status |
-|---|---|
-| Classify supplied evidence per provider and movie/series | Implemented |
-| Strict nine-signal playback evidence policy | Implemented as a classifier; signals are **not measured** |
-| JSON CLI report | Implemented |
-| Create independent movie and series tasks | Implemented |
-| Record check results and reserve limited repair attempts | Implemented |
-| Save/load JSON checkpoints | Implemented |
-| Import current MovieHub provider inventory | Planned |
-| Browser extraction and native Android/LibVLC evidence collection | Planned |
-| Automatic diagnosis, repair, validation and rollback | Planned |
-| Local API, scheduled audits and dashboard | Planned |
-| Installable Cortana extension | Planned |
-
-## Quick start
-
-Python 3.10+; current code uses the standard library only.
+On Windows, double-click `Start Resolver.cmd`. It sets up Python/browser dependencies and asks for your MovieHub checkout if it cannot find one beside this repo. Or run:
 
 ```bash
-git clone https://github.com/billyke2000s/Mobiehub_universal_resolver.git
-cd Mobiehub_universal_resolver
-python -m unittest discover -s tests -v
-python -m resolver.cli --input examples/sample-results.json --output audit-report.json
+python launch.py --moviehub /path/to/moviehub --model qwen3.5:9b
 ```
 
-The sample observations are **synthetic**. A green report does not prove any live site works. The CLI only classifies input.
+Keep the service open. In the updated Cortana: Systems → Extensions → Import extension → choose the private generated `moviehub-extension.json` path printed by the launcher → install → enable.
 
-### Controller API example
+**[Full setup and exact limitations](docs/LOCAL_AI_EXTENSION.md)**. Cortana needs its matching generic extension-host update; the old v1.7.1 EXE does not contain it.
 
-```python
-from resolver.controller import initialise, record_check, begin_repair, save
+## What is implemented
 
-state = initialise(["example-provider"])
-record_check(state, "example-provider", "movie", [
-    {"provider": "example-provider", "kind": "movie", "error": "decoder_failure"}
-])
-if begin_repair(state, "example-provider", "movie", max_attempts=2):
-    print("Attempt reserved; repair execution is not implemented")
-save(state, "audit-state.json")
+| Capability | Current behaviour |
+|---|---|
+| Local AI browser navigation | Observed DOM elements/iframes, optional screenshots, constrained actions and media response capture |
+| Learned navigation routes | Approval saves a recipe; later jobs replay it and recover from mismatches using fresh observations |
+| Local MovieHub source repairs | Actual checkout input, small AI-proposed exact replacements, Python syntax checks, displayed diffs, approved apply and hash-checked rollback |
+| Optional Cortana package | Four generic-host tools: start, job/inventory, apply/rollback, cancel |
+| Local service | Authenticated loopback, bounded async jobs, private source checkpoints |
+| Original evidence classifier/CLI | Retained; classifies supplied evidence without measuring native playback |
+| Native MovieHub playback certification | Not implemented by this extension |
+| Automatic APK build/deployment | Not implemented; use MovieHub's existing build/test workflow after reviewing source changes |
+
+A discovered URL is `resolved_unverified`. A source edit is `patch_applied_unverified`. No real provider has been certified by the controlled fixture tests. Recipes run in the PC resolver; the Android app does not call this PC service.
+
+## Tests
+
+```bash
+python -m pip install -r requirements.txt
+python -m playwright install chromium
+python -m unittest discover -s tests -v
 ```
 
 ## Documentation
@@ -81,6 +67,6 @@ save(state, "audit-state.json")
 - Keep repairs bounded, reviewable and reversible.
 - Cortana integration is optional and separately installed.
 
-## Next concrete milestone
+## Native playback milestone
 
-Import the exact provider inventory from MovieHub at a pinned commit, explicitly record supported kinds, then implement native playback evidence collection for a small authorized test set. **Do not label all 74 sites working without real verification.**
+Extend the JSON registry inventory to include native provider definitions without executing them, and connect actual Android/LibVLC evidence collection. **Do not label all 74 sites working without real verification.**

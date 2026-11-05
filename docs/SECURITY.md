@@ -28,3 +28,7 @@ The CLI reads local JSON and writes a report. The controller loads JSON checkpoi
 ## Responsible operation
 
 Only test sources and content you have permission to access. Respect website terms and rate limits. When a source blocks access, report the block rather than evading it.
+
+## Implemented local extension controls
+
+See LOCAL_AI_EXTENSION.md. Service enforces literal loopback bind/Host, token auth, no browser Origin, JSON/size caps, one worker and bounded actions. Model requests stay on loopback; proxies and redirects are refused. Browser downloads, popups, WebSockets and service workers are blocked. Page/model content is untrusted; only fixed actions on observed IDs run. Source proposals are data until approved, parsed rather than executed, limited to the actual owner's allowlisted provider paths, and protected by hashes/backups. Private proposal files contain source code; media tokens remain in memory. Browser DNS prechecks do not eliminate DNS rebinding. The owner's PC-local service is trusted, not an OS sandbox.

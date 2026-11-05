@@ -1,18 +1,14 @@
-# Optional Cortana integration design
+# Local extension protocol
 
-**Status:** Architecture only; no Cortana files have been changed or installed.
+`python -m resolver.service` binds only `127.0.0.1` (default port 47831). Requests require the exact Host and bearer token and reject browser Origin headers. JSON body limit: 16 KB. No CORS. Generated connection files and tokens are private, excluded from Git.
 
-The resolver runs as a separate local process. Cortana should gain a **generic** extension loader rather than MovieHub-specific tools. Extensions are disabled unless installed and explicitly enabled.
+All four endpoints use POST with `{"arguments":{...},"approved":false}`:
 
-Manifest fields: id, name, version, capabilities, localhost endpoint. Capabilities: audit.read, audit.start, repair.propose, repair.approve. Reject untrusted manifests and deny arbitrary shell execution. Require user approval for mutations and keep the current Cortana pairing/origin protections.
+| Endpoint | Arguments | Behaviour |
+|---|---|---|
+| `/v1/start` | operation resolve/repair, kind movie/series, optional url/title/year/source_file/diagnosis | Requires approval. Returns job_id immediately. One worker. |
+| `/v1/job` | optional job_id; action status/inventory | Returns job/proposal or the actual configured checkout inventory. |
+| `/v1/apply` | job_id, action source/recipe/rollback, proposal_digest | Requires approval and the exact reviewed proposal hash. |
+| `/v1/cancel` | job_id | Sets cancellation; next action/model boundary stops. |
 
-Proposed resolver API (not implemented yet):
-- GET /v1/status: counts by status and kind
-- POST /v1/audits: start bounded run, returns run ID
-- GET /v1/audits/{id}: progress and per-site evidence
-- POST /v1/audits/{id}/pause and /resume
-- POST /v1/repairs/{id}/approve: explicit local approval after validation
-
-Cortana should not mention MovieHub, load the resolver, or expose its tools when the extension is absent. Keep the integration in a separately installable package. Do not change Cortana's app/server.py, app/tools.py, app/runtime.py or UI until their contracts and full AGENTS.md have been reviewed and offline tests run.
-
-The controller in resolver/controller.py is deterministic, checkpointable, and does not claim real browser/player integration. Next work: import inventory and native evidence producer; then a local service and optional Cortana extension.
+Internal source backup fields never leave job responses. Media session URLs stay in memory and are not checkpointed. Native playback is never certified by these endpoints. Full installation and limitations: [LOCAL_AI_EXTENSION.md](LOCAL_AI_EXTENSION.md).

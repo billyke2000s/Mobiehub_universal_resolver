@@ -4,7 +4,7 @@
 
 ## Mission
 
-Make MovieHub sources verifiably functional through bounded, repeatable checks and narrowly scoped repairs. The goal is **working native playback**, not a larger commit count or long reports.
+Build a universal browser resolver driven by local AI, with reusable navigation recipes and a separate optional Cortana extension. Help the owner repair their actual MovieHub sources without repeated whole-site manual audits. Native playback evidence is required for any claim that a provider is fixed.
 
 ## Scope discipline
 
@@ -33,10 +33,11 @@ python -m resolver.cli --input examples/sample-results.json --output audit-repor
 
 ## Current status
 
-The classifier, checkpoint controller and CLI exist. Browser extraction, self-healing, Android native evidence producer, inventory importer, local service, Cortana extension, scheduled audits and automatic deployment are **not implemented**. The existing unit tests have not been independently executed by this documentation change.
+The classifier, checkpoint controller and CLI remain. Local browser/AI navigation, recipe replay, authenticated loopback jobs, actual-checkout source proposals/apply/rollback and a separately installable Cortana extension now exist. See docs/LOCAL_AI_EXTENSION.md for installation and explicit limits. Native Android playback telemetry and automatic APK deployment are not implemented. Do not describe an applied source patch as a verified provider fix.
 
 ## Read next
 
+- `docs/LOCAL_AI_EXTENSION.md`
 - `docs/ARCHITECTURE.md`
 - `docs/EVIDENCE_AND_STATUS.md`
 - `docs/REPAIR_ENGINE.md`
