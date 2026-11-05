@@ -1,10 +1,10 @@
 # Architecture
 
-> Status: design document. The only implemented runtime modules today are `resolver/model.py`, `resolver/controller.py`, and `resolver/cli.py`.
+> The original audit design below is historical. The owner clarified the primary goal: local AI browser resolution and reusable site recovery. Implemented extension/service/browser/source-repair modules are described in [LOCAL_AI_EXTENSION.md](LOCAL_AI_EXTENSION.md); native playback telemetry remains planned.
 
 ## Goal and boundaries
 
-MovieHub Universal Resolver is a separate, deterministic audit and repair coordinator for the MovieHub Android TV project. It is **not** an alternative video player, an unrestricted browsing agent, or a built-in part of Cortana AI.
+MovieHub Universal Resolver is a separate, deterministic audit and repair coordinator for the MovieHub Android TV project. It is not an alternative video player or a built-in part of Cortana AI. The local browser agent uses a fixed, bounded set of observed-element actions.
 
 The eventual components:
 
@@ -65,3 +65,7 @@ MovieHub inventory --> audit queue --> browser diagnostics
 `extensions/cortana/`: distributable extension manifest, tools and UI.
 
 These paths are proposals, **not existing modules**.
+
+## Implemented local extension path
+
+`local_model.py`: structured local Ollama decisions. `browser.py`: ephemeral Chromium and DOM/iframe/media observations. `source_repair.py`: reads the real owner checkout, proposes exact replacements and applies/rolls back only hash-matching edits. `service.py`: authenticated loopback, async jobs, private proposal backups and recipe persistence. `extensions/cortana/manifest.json`: separately installed generic-host tool definitions. See LOCAL_AI_EXTENSION.md for limits. The older audit-controller API remains compatible.

@@ -1,0 +1,30 @@
+{
+  "manifest_version": 1,
+  "id": "moviehub.universal-resolver",
+  "name": "MovieHub Universal Resolver",
+  "description": "Use local AI to navigate changing websites, learn player routes and prepare reviewable repairs to your actual MovieHub sources.",
+  "version": "0.1.0",
+  "connection": {"url": "http://127.0.0.1:47831", "token": "GENERATED_BY_THE_LOCAL_LAUNCHER_ONLY"},
+  "tools": [
+    {"name": "start", "path": "/v1/start", "approval": true,
+     "description": "Start a local AI browser resolve or source repair. For repair, select source_file from the inventory and give diagnosis. Optional url/title adds live browser observations. Returns job_id; poll job for results.",
+     "parameters": {"type": "object", "properties": {
+       "operation": {"type": "string", "enum": ["resolve", "repair"]},
+       "url": {"type": "string"}, "title": {"type": "string"},
+       "kind": {"type": "string", "enum": ["movie", "series"]},
+       "year": {"type": "integer"}, "source_file": {"type": "string"}, "diagnosis": {"type": "string"}
+     }, "required": ["operation", "kind"]}},
+    {"name": "job", "path": "/v1/job", "approval": false,
+     "description": "Read a job's progress, media result or proposed source diff. With no job_id lists recent jobs. action inventory returns actual MovieHub provider source paths and current checkout revision. Never call a proposed patch a verified fix.",
+     "parameters": {"type": "object", "properties": {"job_id": {"type": "string"}, "action": {"type": "string", "enum": ["status", "inventory"]}}}},
+    {"name": "apply", "path": "/v1/apply", "approval": true,
+     "description": "Apply a previously reviewed source diff or save a browser recipe; supply the proposal_digest returned by job. rollback restores an applied source patch only when its current hash still matches. Native playback remains unverified.",
+     "parameters": {"type": "object", "properties": {
+       "job_id": {"type": "string"}, "proposal_digest": {"type": "string"},
+       "action": {"type": "string", "enum": ["source", "recipe", "rollback"]}
+     }, "required": ["job_id", "action", "proposal_digest"]}},
+    {"name": "cancel", "path": "/v1/cancel", "approval": false,
+     "description": "Stop a running local resolver job at the next action boundary. Does not change MovieHub source files.",
+     "parameters": {"type": "object", "properties": {"job_id": {"type": "string"}}, "required": ["job_id"]}}
+  ]
+}

@@ -1,0 +1,28 @@
+name: Local resolver checks
+on:
+  pull_request:
+  push:
+    branches: ['feature/local-ai-extension']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: resolver-project
+      - uses: actions/checkout@v4
+        with:
+          repository: billyke2000s/Cortana-ai
+          ref: feature/extension-host
+          path: Cortana-ai
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r resolver-project/requirements.txt
+      - run: python -m playwright install --with-deps chromium
+      - run: python -m unittest discover -s tests -v
+        working-directory: resolver-project
+        env:
+          CORTANA_CHECKOUT: '${{ github.workspace }}/Cortana-ai'
